@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[Your Name] | Security Portfolio</title>
+<meta name="description" content="[Your Role] — Portfolio template">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<!--
+  ============================================================
+  HOW TO CUSTOMIZE THIS TEMPLATE
+  ============================================================
+  1. Search for [Your ...] placeholders and swap in your info.
+  2. Resume button: set href on .js-resume-link to your PDF path.
+  3. Contact links: update mailto / LinkedIn / GitHub URLs near
+     id="contact".
+  4. Sections you don't need (e.g. Certs) can be deleted along
+     with their matching nav link.
+  5. Colors and fonts are controlled by the CSS variables in
+     :root below — change --accent / --accent-2 to re-theme.
+  ============================================================
+-->
+
+<style>
+  :root{
+    --bg: #0a0c0b;
+    --bg-alt: #0e1210;
+    --surface: #121714;
+    --surface-2: #161c18;
+    --border: #232f28;
+    --text: #d9e6dd;
+    --text-dim: #80978a;
+    --text-faint: #4d5f54;
+    --accent: #ffb300;
+    --accent-soft: rgba(255,179,0,0.12);
+    --accent-2: #4fd6c4;
+    --accent-2-soft: rgba(79,214,196,0.12);
+    --red: #ff5f56;
+    --yellow: #ffbd2e;
+    --green: #27c93f;
+    --font: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --maxw: 1040px;
+    --radius: 3px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* faint scanline / grain texture for terminal feel */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    pointer-events:none;
+    z-index: 2;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.012) 0px,
+      rgba(255,255,255,0.012) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: overlay;
+  }
+
+  a{ color: var(--accent-2); text-decoration:none; }
+  a:hover{ text-decoration: underline; }
+  ::selection{ background: var(--accent); color: #0a0c0b; }
+
+  :focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  h1,h2,h3,h4{ margin:0; font-weight:700; letter-spacing:-0.01em; }
+
+  .wrap{ max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  .prompt{ color: var(--accent); }
+  .prompt-2{ color: var(--accent-2); }
+  .dim{ color: var(--text-dim); }
+  .faint{ color: var(--text-faint); }
+
+  .cursor{
+    display:inline-block;
+    width: 0.55em; height: 1em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: -2px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ============ Boot overlay ============ */
+  #boot{
+    position: fixed; inset:0;
+    background: #060807;
+    color: var(--green);
+    font-size: 13px;
+    z-index: 999;
+    padding: 32px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    transition: opacity .5s ease, visibility .5s ease;
+  }
+  #boot.hide{ opacity:0; visibility:hidden; }
+  #boot p{ margin: 0 0 6px; opacity:0; animation: bootline .25s forwards; }
+  #boot p:nth-child(1){ animation-delay: .05s; }
+  #boot p:nth-child(2){ animation-delay: .30s; }
+  #boot p:nth-child(3){ animation-delay: .55s; }
+  #boot p:nth-child(4){ animation-delay: .80s; color: var(--accent); }
+  @keyframes bootline{ to{ opacity:1; } }
+  @media (prefers-reduced-motion: reduce){
+    #boot{ display:none; }
+  }
+
+  /* ============ Nav ============ */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(10,12,11,0.86);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    height: 56px;
+  }
+  .brand{
+    color: var(--text); font-weight:700; font-size: 14px;
+  }
+  .brand .prompt{ margin-right:2px; }
+  nav.links{ display:flex; gap: 22px; }
+  nav.links a{
+    color: var(--text-dim); font-size: 13px; position:relative;
+    padding: 4px 2px;
+  }
+  nav.links a::before{ content:"# "; color: var(--text-faint); }
+  nav.links a:hover, nav.links a.active{ color: var(--accent); text-decoration:none; }
+
+  .menu-btn{
+    display:none;
+    background:none; border:1px solid var(--border); color: var(--text);
+    font-family: var(--font); font-size: 13px; padding: 6px 10px;
+    border-radius: var(--radius); cursor:pointer;
+  }
+
+  @media (max-width: 760px){
+    nav.links{
+      position:absolute; top:56px; left:0; right:0;
+      background: var(--bg-alt); border-bottom:1px solid var(--border);
+      flex-direction:column; gap:0; padding: 8px 0;
+      display:none;
+    }
+    nav.links.open{ display:flex; }
+    nav.links a{ padding: 10px 24px; }
+    .menu-btn{ display:inline-block; }
+  }
+
+  /* ============ Terminal window chrome (wraps every section) ============ */
+  .term{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow:hidden;
+    margin: 0 0 28px;
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px;
+    padding: 9px 12px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .dot{ width:10px; height:10px; border-radius:50%; }
+  .dot.r{ background: var(--red); }
+  .dot.y{ background: var(--yellow); }
+  .dot.g{ background: var(--green); }
+  .term-title{
+    margin-left: 8px; font-size: 12px; color: var(--text-faint);
+  }
+  .term-body{ padding: 28px; }
+  @media (max-width: 640px){ .term-body{ padding: 20px 16px; } }
+
+  section{ padding: 56px 0 0; scroll-margin-top: 72px; }
+  section:last-of-type{ padding-bottom: 56px; }
+
+  .eyebrow{
+    font-size: 12px; color: var(--accent); margin: 0 0 8px;
+    text-transform: lowercase;
+  }
+  .section-title{
+    font-size: 26px; margin: 0 0 28px;
+  }
+
+  /* reveal-on-scroll */
+  .reveal{ opacity:0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ============ Hero ============ */
+  .hero{ padding: 64px 0 40px; }
+  .hero-grid{
+    display:grid; grid-template-columns: 1.3fr 0.7fr; gap: 40px; align-items:center;
+  }
+  @media (max-width: 760px){ .hero-grid{ grid-template-columns: 1fr; } }
+
+  .hero .eyebrow{ font-size: 13px; }
+  .hero h1{
+    font-size: clamp(34px, 5.5vw, 54px);
+    line-height: 1.05;
+    margin-bottom: 18px;
+  }
+  .hero-sub{
+    color: var(--text-dim); font-size: 16px; max-width: 56ch; margin-bottom: 24px;
+    min-height: 3.3em;
+  }
+  .badges{
+    display:flex; flex-wrap:wrap; gap:10px; margin-bottom: 28px;
+  }
+  .badge{
+    border:1px solid var(--border); background: var(--surface);
+    color: var(--text-dim); font-size: 12px; padding: 6px 12px; border-radius: 20px;
+  }
+  .badge strong{ color: var(--text); }
+
+  .btn-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    font-family: var(--font); font-size: 13px; font-weight:600;
+    padding: 12px 20px; border-radius: var(--radius); cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    border: 1px solid transparent;
+  }
+  .btn:hover{ text-decoration:none; }
+  .btn-primary{ background: var(--accent); color: #161200; }
+  .btn-primary:hover{ filter: brightness(1.08); }
+  .btn-ghost{ background:transparent; border-color: var(--border); color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--accent-2); color: var(--accent-2); }
+
+  .avatar-frame{
+    border:1px solid var(--border); border-radius: 6px;
+    background: var(--surface); padding: 14px;
+  }
+  .avatar-frame .term-title{ margin: 0 0 10px; }
+  .avatar-frame img{
+    width:100%; aspect-ratio: 1/1; object-fit:cover;
+    border-radius: 4px; filter: grayscale(20%) contrast(1.05);
+    border: 1px solid var(--border);
+  }
+  .avatar-status{
+    display:flex; align-items:center; gap:6px; margin-top:12px; font-size:12px; color: var(--text-dim);
+  }
+  .status-dot{ width:8px; height:8px; border-radius:50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+  /* ============ About ============ */
+  .about-grid{ display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; }
+  @media (max-width: 760px){ .about-grid{ grid-template-columns: 1fr; } }
+  .about-grid p{ margin: 0 0 16px; color: var(--text); }
+  .about-grid p .dim{ color: var(--text-dim); }
+
+  .mini-timeline{ display:flex; flex-direction:column; gap:0; }
+  .mt-item{ display:flex; gap:14px; padding: 0 0 22px; position:relative; }
+  .mt-item:last-child{ padding-bottom:0; }
+  .mt-rail{ display:flex; flex-direction:column; align-items:center; }
+  .mt-dot{ width:9px; height:9px; border-radius:50%; background: var(--accent-2); flex-shrink:0; margin-top:5px; }
+  .mt-line{ flex:1; width:1px; background: var(--border); margin-top:4px; }
+  .mt-year{ color: var(--accent-2); font-size: 12px; font-weight:700; }
+  .mt-text{ color: var(--text); font-size: 13.5px; }
+  .mt-role{ color: var(--text-dim); font-size: 12.5px; }
+
+  /* ============ Skills ============ */
+  .skills-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+  }
+  @media (max-width: 880px){ .skills-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 560px){ .skills-grid{ grid-template-columns: 1fr; } }
+  .skill-card{
+    border:1px solid var(--border); border-radius: var(--radius); padding: 18px;
+    background: var(--surface-2);
+  }
+  .skill-card h3{
+    font-size: 13px; color: var(--accent); margin-bottom: 14px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .skill-row{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size: 12.5px; padding: 7px 0; border-top: 1px solid var(--border);
+  }
+  .skill-row:first-of-type{ border-top:none; }
+  .skill-row .lvl{ font-size: 10.5px; padding: 2px 8px; border-radius: 10px; }
+  .lvl-proficient{ background: var(--accent-soft); color: var(--accent); }
+  .lvl-working{ background: var(--accent-2-soft); color: var(--accent-2); }
+  .lvl-familiar{ background: var(--surface); color: var(--text-faint); border:1px solid var(--border); }
+
+  .frameworks{ margin-top: 22px; display:flex; flex-wrap:wrap; gap:8px; }
+  .fw-tag{ font-size:12px; color: var(--text-dim); border:1px dashed var(--border); padding: 5px 10px; border-radius: 4px; }
+
+  /* ============ Experience ============ */
+  .exp-item{
+    border-left: 1px solid var(--border);
+    padding: 0 0 32px 26px;
+    position: relative;
+  }
+  .exp-item:last-child{ padding-bottom:0; }
+  .exp-item::before{
+    content:""; position:absolute; left:-5px; top:4px;
+    width:9px; height:9px; border-radius:50%;
+    background: var(--bg-alt); border: 2px solid var(--accent);
+  }
+  .exp-meta{ display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; margin-bottom:4px; }
+  .exp-date{ font-size:11.5px; color: var(--accent); font-weight:700; }
+  .exp-current{ font-size:10px; color: var(--green); border:1px solid var(--green); padding:1px 7px; border-radius:10px; }
+  .exp-role{ font-size: 17px; margin: 2px 0 2px; }
+  .exp-org{ font-size: 13px; color: var(--text-dim); margin-bottom: 12px; }
+  .exp-item ul{ margin: 0 0 14px; padding-left: 18px; color: var(--text); font-size: 13.5px; }
+  .exp-item li{ margin-bottom: 6px; }
+  .exp-item li strong{ color: var(--accent-2); font-weight:600; }
+  .exp-tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .exp-tags span{ font-size: 11px; color: var(--text-faint); background: var(--surface-2); border:1px solid var(--border); padding:3px 8px; border-radius: 3px; }
+
+  /* ============ Toolkit ============ */
+  .toolkit-group{ margin-bottom: 22px; }
+  .toolkit-group:last-child{ margin-bottom:0; }
+  .toolkit-group h4{
+    font-size: 12px; color: var(--text-dim); margin-bottom: 10px; font-weight:600;
+  }
+  .toolkit-group h4 .glyph{ color: var(--accent); margin-right:6px; }
+  .tool-pills{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tool-pills span{
+    font-size: 12px; color: var(--text); background: var(--surface-2);
+    border: 1px solid var(--border); padding: 5px 11px; border-radius: 4px;
+  }
+
+  /* ============ Certs ============ */
+  .certs-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+  @media (max-width: 880px){ .certs-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 560px){ .certs-grid{ grid-template-columns: 1fr; } }
+  .cert-card{
+    border:1px solid var(--border); border-radius: var(--radius); padding: 20px;
+    background: var(--surface-2); position:relative;
+  }
+  .cert-abbr{ font-size: 22px; font-weight:800; color: var(--accent); margin-bottom: 10px; }
+  .cert-name{ font-size: 13px; margin-bottom:4px; }
+  .cert-issuer{ font-size:12px; color: var(--text-dim); margin-bottom: 14px; }
+  .cert-status{ font-size: 11px; display:inline-flex; align-items:center; gap:6px; }
+  .cert-status.earned{ color: var(--green); }
+  .cert-status.progress{ color: var(--yellow); }
+  .cert-status .dot2{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+  /* ============ Projects ============ */
+  .projects-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+  @media (max-width: 880px){ .projects-grid{ grid-template-columns: 1fr; } }
+  .proj-card{
+    border:1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface-2); display:flex; flex-direction:column;
+  }
+  .proj-file{
+    font-size: 11.5px; color: var(--text-faint); padding: 10px 16px;
+    border-bottom: 1px solid var(--border); display:flex; align-items:center; gap:6px;
+  }
+  .proj-body{ padding: 16px; flex:1; display:flex; flex-direction:column; }
+  .proj-title{ font-size: 14.5px; margin-bottom: 8px; }
+  .proj-desc{ font-size: 12.5px; color: var(--text-dim); margin-bottom: 12px; flex:1; }
+  .proj-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom: 12px; }
+  .proj-tags span{ font-size: 10.5px; color: var(--accent-2); background: var(--accent-2-soft); padding: 3px 8px; border-radius: 3px; }
+  .proj-body ul{ margin:0; padding-left: 16px; font-size: 12px; color: var(--text-dim); }
+  .proj-body li{ margin-bottom: 4px; }
+
+  /* ============ Contact ============ */
+  .contact-term .term-body{ text-align:center; padding: 48px 28px; }
+  .contact-term h2{ font-size: 26px; margin-bottom: 10px; }
+  .contact-term p{ color: var(--text-dim); margin: 0 0 28px; }
+  .contact-links{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-bottom: 24px; }
+  .contact-links a{
+    display:flex; align-items:center; gap:8px;
+    border:1px solid var(--border); padding: 10px 16px; border-radius: var(--radius);
+    color: var(--text); font-size: 13px;
+  }
+  .contact-links a:hover{ border-color: var(--accent-2); color: var(--accent-2); text-decoration:none; }
+  .contact-links svg{ width:15px; height:15px; flex-shrink:0; }
+
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 22px 0; text-align:center;
+    font-size: 12px; color: var(--text-faint);
+  }
+</style>
+</head>
+<body>
+
+<!-- Boot sequence overlay (signature touch — auto-hides) -->
+<div id="boot" aria-hidden="true">
+  <p>&gt; initializing secure session...</p>
+  <p>&gt; loading profile: <span class="prompt">/home/[you]</span></p>
+  <p>&gt; decrypting portfolio.json ... OK</p>
+  <p>&gt; access granted_</p>
+</div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="prompt">&gt;</span> Mr_Aniket R</div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks">menu</button>
+    <nav class="links" id="navLinks">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#experience">experience</a>
+      <a href="#toolkit">toolkit</a>
+      <a href="#certs">certs</a>
+      <a href="#projects">projects</a>
+      <a href="#contact">contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">&gt; whoami</p>
+        <h1>Aniket Rane</h1>
+        <p class="hero-sub" id="typedSub">Digital Marketing analyst with hands-on experience in Detail-oriented E-commerce Web Content Analyst with 4.9 years of experience managing end-to-end digital content lifecycle across global marketplaces along with leading the process with AI implementation for seamless workflow. </p>
+        <div class="badges">
+          <span class="badge"><strong>Digital Marketing</strong></span>
+          <span class="badge"><strong>4.9 Years Experience</strong></span>
+          <span class="badge"><strong>Amazon Advertising Certification</strong></span>
+          <span class="badge"><strong>Google ADS Certification</strong></span>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn-primary js-resume-link" href="#" download>Download Resume</a>
+          <a class="btn btn-ghost" href="#skills">View Skills</a>
+        </div>
+      </div>
+      <div class="avatar-frame reveal">
+        <p class="term-title">profile.webp</p>
+        <img src="Photo.jpg" height="400" width="400" alt="[Your Name]">
+        <div class="avatar-status"><span class="status-dot"></span> status: open to opportunities</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about">
+    <p class="eyebrow">#about</p>
+    <h2 class="section-title">About Me</h2>
+    <div class="term reveal">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">about.md</span>
+      </div>
+      <div class="term-body about-grid">
+        <div>
+          <p><li>Content Strategist & E-commerce Web Content Analyst with 4.9 years of experience managing end-to-end digital content operations across global marketplaces.
+I specialize in content strategy, localization, content syndication, A+ Content deployment, SKU mapping, and quality assurance for international brands across EMEA and American Region.</li>
+
+<li>My experience spans content creation, product listing optimization, and cross-functional project management using Amazon Vendor Central, 1WorldSync, Workfront, Wrike, Jira, and Salesforce. I have successfully led multi-locale A+ Content deployments, managed complex content workflows, 
+coordinated with translation, creative, compliance, and marketplace teams, and ensured over 95% content compliance through rigorous quality audits.</li>
+
+<li>Beyond content execution, I drive process improvements through workflow optimization and automation initiatives, helping reduce manual effort while improving delivery efficiency. 
+I also conduct knowledge-sharing sessions to strengthen team capabilities in content mapping, syndication processes, and platform best practices.</li>
+
+<li>Currently seeking opportunities as a Content Strategist, E-commerce Content Specialist, Digital Content Analyst, Content Operations Analyst, or Marketplace Content Manager,
+ where I can leverage my expertise in digital content strategy, stakeholder management, and process optimization to deliver scalable, customer-centric content experiences.</li></p>
+          </div>
+        <div class="mini-timeline">
+          <div class="mt-item">
+            <div class="mt-rail"><span class="mt-dot"></span><span class="mt-line"></span></div>
+            <div><div class="mt-year">[10/2021-05/2022]</div><div class="mt-text">[Company: Eclerx / Project: Amazon Ads]</div><div class="mt-role">[Role: Amazon Ads Specialist]</div></div>
+          </div>
+          <div class="mt-item">
+            <div class="mt-rail"><span class="mt-dot"></span><span class="mt-line"></span></div>
+            <div><div class="mt-year">[06/2022-Present]</div><div class="mt-text">[Company: Eclerx / Project: Dell Technologies ]</div><div class="mt-role">[Role: Dell Content Management Specialist]</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section id="skills">
+    <p class="eyebrow">#skills</p>
+    <h2 class="section-title">Technical Skills</h2>
+    <div class="term reveal">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">skills --list</span>
+      </div>
+      <div class="term-body">
+        <div class="skills-grid">
+          <div class="skill-card">
+            <h3>◈ E-commerce & Content Management</h3>
+            <div class="skill-row"><span>A+ Content Management</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Content Publishing</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Content Syndication</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Content Localization</span><span class="lvl lvl-proficient">Proficient</span></div>
+          </div>
+          <div class="skill-card">
+            <h3>◈ Project & Workflow Tools</h3>
+            <div class="skill-row"><span>Workfront</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Wrike</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Jira</span><span class="lvl lvl-proficient">Proficient</span></div>
+          </div>
+          <div class="skill-card">
+            <h3>◈ Quality & Product Management</h3>
+            <div class="skill-row"><span>Product Listing Management</span><span class="lvl lvl-working">Working</span></div>
+            <div class="skill-row"><span>SKU Mapping & Validation</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Content Auditing & Quality Assurance</span><span class="lvl lvl-proficient">Proficient</span></div>
+          </div>
+          <div class="skill-card">
+            <h3>◈ Prime Campaigns(Black Friday Cyber monday | Amazon Prime day )</h3>
+            <div class="skill-row"><span>Compliance Review</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Metadata Verification</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Project Readiness</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Pre & Post Go live audits</span><span class="lvl lvl-proficient">Proficient</span></div>
+          </div>
+          <div class="skill-card">
+            <h3>◈ Process Improvement</h3>
+            <div class="skill-row"><span>Workflow Automation</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>Process Optimization</span><span class="lvl lvl-proficient">Proficient</span></div>
+            <div class="skill-row"><span>SOP Documentation</span><span class="lvl lvl-proficient">Proficient</span></div>
+          </div>
+        </div>
+        <div class="frameworks">
+          <span class="fw-tag">[Framework One]</span>
+          <span class="fw-tag">[Framework Two]</span>
+          <span class="fw-tag">[Framework Three]</span>
+          <span class="fw-tag">[Framework Four]</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section id="experience">
+    <p class="eyebrow">#experience</p>
+    <h2 class="section-title">Experience</h2>
+    <div class="term reveal">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">history | tail -n 5</span>
+      </div>
+      <div class="term-body">
+
+        <div class="exp-item">
+          <div class="exp-meta"><span class="exp-date">June 2022 – Present</span><span class="exp-current">Current</span></div>
+                     <h3 class="exp-project"> Project: Dell Technologies </h3>
+          <h3 class="exp-role">Role: Dell content management analyst</h3>
+          <p class="exp-org">Eclerx – Mumbai, Maharashtra</p>
+          <ul>
+            <li>Managed content-related project lifecycles using <strong>Workfront</strong>, including project creation, task assignment, status tracking, and deliverable readiness.</li>
+            <li>Conducted audits and quality checks on syndicated content before client submission, achieving <strong>95%</strong> compliance rate</li>
+            <li>Independently oversee SKU mapping processes, auditing data from Workfront, coordinating with POCs for mapping, and validating content reflection on platforms.</li>
+            <li>Liaise with 1WorldSync POCs, assisting in discussions and addressing platform-specific requirements.</li>
+            <li>Drive process improvements and workflow automation by identifying gaps, proposing solutions, and testing new automation tools.</li>
+            <li>Deliver knowledge-sharing sessions to upskill team members on content mapping strategies and platform tools.</li>
+          <div class="exp-tags"><span>Amazon Vendor Central (AVC)</span><span>1WorldSync</span><span>Workfront</span><span>DAM</span><span>Sharepoint</span><span>BOX</span><span>Wrike</span></div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta"><span class="exp-date">October 2021 – May 2022</span></div>
+          <h3 class="exp-project"> Project: Amazon Ads </h3>
+          <h3 class="exp-role">Role: Amazon Ads Specialist</h3>
+          <p class="exp-org">Eclerx – Mumbai, Maharashtra</p>
+          <ul>
+            <li>Developed and executed comprehensive Amazon advertising strategies aligned with business objectives and revenue targets.</li>
+            <li>Managed end-to-end DSP trafficking operations, ensuring accurate campaign setup, targeting, budget allocation, and timely deployment.</li>
+            <li>Trafficked and optimized campaigns across <strong>Amazon Fire TV Feature Rotator</strong> and <strong>Amazon Prime</strong> placements to maximize visibility and engagement.</li>
+            <li>Created and coordinated production of video and display creatives for DSP and Fire TV campaigns in collaboration with design and content teams.</li>
+            <li>Utilized <strong>Salesforce</strong>, <strong>Rodeo Tool Script</strong>, and <strong>Slack</strong> for campaign tracking, stakeholder communication, and workflow management.</li>
+            <li>Collaborated with cross-functional teams including sales, creative, and analytics to improve campaign effectiveness and ROI.</li>
+          </ul>
+          <div class="exp-tags"><span>Amazon Vendor central</span><span>Slack</span><span>Amazon DSP</span></div>
+        </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOOLKIT ============ -->
+  <section id="toolkit">
+    <p class="eyebrow">#toolkit</p>
+    <h2 class="section-title">Toolkit</h2>
+    <div class="term reveal">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">ls -la /usr/local/tools</span>
+      </div>
+      <div class="term-body">
+        <div class="toolkit-group">
+          <h4><span class="glyph">◈</span>Content Creation & Management</h4>
+          <div class="tool-pills"><span>Amazon Vendor Central(AVC)</span><span>1WorldSync</span></div>
+        </div>
+        <div class="toolkit-group">
+          <h4><span class="glyph">◈</span>Project & Workflow Tools</h4>
+          <div class="tool-pills"><span>Workfront</span><span>Wrike</span><span>Jira</span><span>Salesforce</span></div>
+        </div>
+        <div class="toolkit-group">
+          <h4><span class="glyph">◈</span>Content Program Management</h4>
+          <div class="tool-pills"><span>Microsoft Excel</span><span>Microsoft Word</span><span>Microsoft PowerPoint</span></div>
+        </div>
+        <div class="toolkit-group">
+          <h4><span class="glyph">◈</span>Assets Management</h4>
+          <div class="tool-pills"><span>DAM-Dell</span><span>DELL-OCP</span><span>BOX</span><span>Sharepoint</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CERTS ============ -->
+  <section id="certs">
+    <p class="eyebrow">#certs</p>
+    <h2 class="section-title">Certifications</h2>
+    <div class="term reveal">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">cat certifications.json</span>
+      </div>
+      <div class="term-body">
+        <div class="certs-grid">
+          <div class="cert-card">
+            <div class="cert-abbr">[ABC]</div>
+            <div class="cert-name">[Full Certification Name]</div>
+            <div class="cert-issuer">[Issuing Organization]</div>
+            <span class="cert-status earned"><span class="dot2"></span>Certified — [Month Year]</span>
+          </div>
+          <div class="cert-card">
+            <div class="cert-abbr">[XYZ]</div>
+            <div class="cert-name">[Full Certification Name]</div>
+            <div class="cert-issuer">[Issuing Organization]</div>
+            <span class="cert-status earned"><span class="dot2"></span>Certified — [Month Year]</span>
+          </div>
+          <div class="cert-card">
+            <div class="cert-abbr">[QRS]</div>
+            <div class="cert-name">[Full Certification Name]</div>
+            <div class="cert-issuer">[Issuing Organization]</div>
+            <span class="cert-status progress"><span class="dot2"></span>Expected — [Month Year]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects">
+    <p class="eyebrow">#projects</p>
+    <h2 class="section-title">Projects &amp; Lab Work</h2>
+    <div class="term reveal">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">ls ~/projects</span>
+      </div>
+      <div class="term-body">
+        <div class="projects-grid">
+          <div class="proj-card">
+            <div class="proj-file">📄 project_one.sh</div>
+            <div class="proj-body">
+              <h3 class="proj-title">[Project Name]</h3>
+              <p class="proj-desc">[One to two sentences describing what you built and why it's relevant.]</p>
+              <div class="proj-tags"><span>[Tech]</span><span>[Tech]</span><span>[Tech]</span></div>
+              <ul>
+                <li>[Notable detail or outcome]</li>
+                <li>[Notable detail or outcome]</li>
+              </ul>
+            </div>
+          </div>
+          <div class="proj-card">
+            <div class="proj-file">📄 project_two.sh</div>
+            <div class="proj-body">
+              <h3 class="proj-title">[Project Name]</h3>
+              <p class="proj-desc">[One to two sentences describing what you built and why it's relevant.]</p>
+              <div class="proj-tags"><span>[Tech]</span><span>[Tech]</span><span>[Tech]</span></div>
+              <ul>
+                <li>[Notable detail or outcome]</li>
+                <li>[Notable detail or outcome]</li>
+              </ul>
+            </div>
+          </div>
+          <div class="proj-card">
+            <div class="proj-file">📄 project_three.sh</div>
+            <div class="proj-body">
+              <h3 class="proj-title">[Project Name]</h3>
+              <p class="proj-desc">[One to two sentences describing what you built and why it's relevant.]</p>
+              <div class="proj-tags"><span>[Tech]</span><span>[Tech]</span><span>[Tech]</span></div>
+              <ul>
+                <li>[Notable detail or outcome]</li>
+                <li>[Notable detail or outcome]</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact">
+    <p class="eyebrow">#contact</p>
+    <h2 class="section-title">Let's Connect</h2>
+    <div class="term contact-term reveal">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">contact --send</span>
+      </div>
+      <div class="term-body">
+        <p class="dim">Open to [role types you're targeting, e.g. "SOC L2/L3, Threat Intelligence, and VAPT roles"].</p>
+        <div class="contact-links">
+          <a href="https://www.linkedin.com/in/your-handle/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8.5h4V23h-4V8.5zM8.5 8.5h3.83v1.98h.05c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.14V23h-4v-6.7c0-1.6-.03-3.66-2.23-3.66-2.24 0-2.58 1.75-2.58 3.55V23h-4V8.5z"/></svg>
+            linkedin.com/in/your-handle
+          </a>
+          <a href="mailto:you@example.com">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 4h20v16H2V4zm2 2v.01L12 13l8-6.99V6H4zm16 12V8.24l-8 6.99-8-6.99V18h16z"/></svg>
+            you@example.com
+          </a>
+          <a href="https://github.com/your-handle" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.74.5 12.02c0 5.1 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.37-3.87-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.41-5.27 5.69.42.36.78 1.08.78 2.17v3.21c0 .31.21.66.79.55A10.53 10.53 0 0 0 23.5 12c0-6.27-5.23-11.5-11.5-11.5z"/></svg>
+            github.com/your-handle
+          </a>
+        </div>
+        <a class="btn btn-primary js-resume-link" href="#" download>Download Resume (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="prompt">&gt;</span> [Your.Name] · [Your Role] &nbsp;|&nbsp; © <span id="year"></span> All rights reserved.
+  </div>
+</footer>
+
+<script>
+  // boot overlay
+  document.addEventListener('DOMContentLoaded', () => {
+    const boot = document.getElementById('boot');
+    if (boot) setTimeout(() => boot.classList.add('hide'), 1100);
+  });
+
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // mobile nav
+  const menuBtn = document.getElementById('menuBtn');
+  const navLinks = document.getElementById('navLinks');
+  menuBtn.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', false);
+  }));
+
+  // scrollspy
+  const sections = document.querySelectorAll('main section[id]');
+  const navItems = document.querySelectorAll('nav.links a');
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = document.querySelector(`nav.links a[href="#${entry.target.id}"]`);
+      if (!link) return;
+      if (entry.isIntersecting) {
+        navItems.forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+  sections.forEach(s => spy.observe(s));
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => revealObs.observe(el));
+
+  // typed effect for hero subtitle
+  (function typeSub(){
+    const el = document.getElementById('typedSub');
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const full = el.textContent;
+    el.textContent = '';
+    let i = 0;
+    function tick(){
+      el.textContent = full.slice(0, i) + (i < full.length ? '▌' : '');
+      i++;
+      if (i <= full.length) requestAnimationFrame(() => setTimeout(tick, 12));
+    }
+    setTimeout(tick, 1200);
+  })();
+</script>
+
+</body>
+</html>
